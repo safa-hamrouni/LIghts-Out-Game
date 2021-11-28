@@ -2,7 +2,11 @@ import React from "react";
 import AllRows from "./AllRows";
 
 const Board = () => {
-  return <>{<AllRows />}</>;
+  return (
+    <>
+      <AllRows />
+    </>
+  );
 };
 
-export default Board
+export default Board;

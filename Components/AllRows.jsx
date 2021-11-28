@@ -12,8 +12,8 @@ const matrix = [
 ];
 
 const AllRows = () => {
-  const renderRows = matrix.map((item) => (
-    <OneRow item={item} key={uuidv4()} />
+  const renderRows = matrix.map((item, index) => (
+    <OneRow matrixIndex={index} item={item} key={uuidv4()} />
   ));
   return <>{renderRows}</>;
 };
