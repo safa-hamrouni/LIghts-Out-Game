@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-
-const OneCell = ({ matrix, i, j }) => {
-  const [state, setState] = useState(matrix[i][j]);
+const OneCell = ({ matrix, state, i, j }) => {
   const handlePress = (i, j) => {
-    if (i >= 0 && i < matrix.length && j >= 0 && j < matrix[i].length)
+    if (i >= 0 && i < matrix.length && j >= 0 && j < matrix[i].length) {
       matrix[i][j] = !matrix[i][j];
 
+    }
   };
   const handleCellPress = (i, j) => {
     handlePress(i, j);
@@ -15,11 +14,10 @@ const OneCell = ({ matrix, i, j }) => {
     handlePress(i - 1, j);
     handlePress(i, j - 1);
     handlePress(i, j + 1);
-    console.log(matrix);
   };
   return (
     <TouchableOpacity
-      style={matrix[i][j] ? styles.squareLit : styles.squareDark}
+      style={state ? styles.squareLit : styles.squareDark}
       onPress={() => handleCellPress(i, j)}
     >
       <View></View>
