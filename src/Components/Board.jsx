@@ -1,20 +1,29 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 // import OneCell from "./OneCell"
 
 let matrix = [
-  [false, true, true, false, false],
   [false, true, false, false, false],
-  [true, false, false, true, false],
-  [true, false, false, false, true],
   [false, false, false, true, false],
+  [false, true, false, false, false],
+  [false, false, false, false, true],
+  [true, false, false, false, false],
 ];
 
 const Board = () => {
   const [boardState, setBoardState] = useState(false);
-  let [clickCount, setClickCount] = useState(0)
+  const [youWon, setYouWon] = useState(false);
+  let [clickCount, setClickCount] = useState(0);
+
+
   const handlePress = (i, j) => {
     if (i >= 0 && i < 5 && j >= 0 && j < 5) matrix[i][j] = !matrix[i][j];
     setBoardState((prevState) => !prevState);
@@ -25,7 +34,18 @@ const Board = () => {
     handlePress(i - 1, j);
     handlePress(i, j - 1);
     handlePress(i, j + 1);
-    setClickCount(prevState => prevState+1)
+    setClickCount((prevState) => prevState + 1);
+  };
+  const handleWinner = () => {
+    setYouWon((prevState) => !prevState);
+  };
+  const randomLitCells = () => {
+    console.log("random");
+  };
+
+  const handleReset = () => {
+    setClickCount(0);
+    randomLitCells();
   };
 
   const renderBoard = [];
@@ -46,10 +66,16 @@ const Board = () => {
   createBoard();
   
   return (
-  <>
-  <Text>Count: {clickCount}</Text>
-  <View style={styles.rows}>{renderBoard}</View>
-  </>);
+    <>
+      <Text>Count: {clickCount}</Text>
+      {!youWon ? (
+        <View style={styles.rows}>{renderBoard}</View>
+      ) : (
+        <Text>You Won !! </Text>
+      )}
+      <Button onPress={handleReset} title="Reset" />
+    </>
+  );
 };
 
 let styles = StyleSheet.create({
@@ -59,14 +85,14 @@ let styles = StyleSheet.create({
   },
   squareDark: {
     backgroundColor: "#454B1B",
-    width: 76,
+    width: "18%",
     height: 76,
     margin: 2,
     borderRadius: 10,
   },
   squareLit: {
     backgroundColor: "#32cd32",
-    width: 76,
+    width: "18%",
     height: 76,
     margin: 2,
     borderRadius: 10,
