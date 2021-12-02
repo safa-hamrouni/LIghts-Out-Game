@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 let matrix = [];
 
-let createMatrix = (() => {
+let createMatrix = () => {
   for (let i = 0; i < 5; i++) {
     let cols = [];
     for (let j = 0; j < 5; j++) {
@@ -14,19 +14,20 @@ let createMatrix = (() => {
     }
     matrix.push(cols);
   }
-})();
+}
+createMatrix();
 
 const Board = () => {
   const [boardState, setBoardState] = useState(false);
   const [youWon, setYouWon] = useState(false);
   const [youLost, setYouLost] = useState(false);
-  let [clickCount, setClickCount] = useState(0);
-  let [clicksToLose, setClicksToLose] = useState(10);
+  let [clicksToLose, setClicksToLose] = useState(15);
   const renderBoard = [];
 
   useEffect(() => {
     handleLooser(clicksToLose);
-  }, [clicksToLose]);
+    handleWinner(matrix);
+  }, [clicksToLose, matrix]);
 
   const createBoard = ((arr) => {
     for (let i = 0; i < arr.length; i++) {
@@ -54,19 +55,17 @@ const Board = () => {
     handlePress(i - 1, j);
     handlePress(i, j - 1);
     handlePress(i, j + 1);
-    handleWinner();
-    setClickCount((prevState) => prevState + 1);
     setClicksToLose((prevState) => prevState - 1);
   };
 
-  const handleWinner = () => {
-    //in progress
-    // let arr = [];
-    // matrix.forEach((mat) => {
-    //   arr.push(mat.filter((cell) => cell === true && cell.length === 0));
-    // });
-    // console.log(arr);
-    //if (!winnerArr.length) setYouWon((prevState) => !prevState);
+  const handleWinner = (matrix) => {
+    let winnerArr = [];
+    matrix.forEach((el) => {
+      el.forEach((elem) => {
+        if (elem) winnerArr.push(elem);
+      });
+    });
+    if (!winnerArr.length) setYouWon((prevState) => !prevState);
   };
 
   const handleLooser = (clicks) => {
@@ -76,8 +75,7 @@ const Board = () => {
   };
 
   const handleReset = () => {
-    setClickCount(0);
-    setClicksToLose(10);
+    setClicksToLose(15);
     if (youLost) setYouLost(false);
     if (youWon) setYouWon(false);
   };
@@ -90,8 +88,9 @@ const Board = () => {
         <Text style={styles.text}>You Lost !!!! </Text>
       ) : (
         <>
-          <Text>Clicks: {clickCount}</Text>
-          <Text>You have {clicksToLose} clicks left ! </Text>
+          <Text style={styles.text}>
+            You have {clicksToLose} clicks left !{" "}
+          </Text>
           <View style={styles.rows}>{renderBoard}</View>
         </>
       )}
