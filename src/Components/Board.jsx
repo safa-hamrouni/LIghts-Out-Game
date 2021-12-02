@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 let matrix = [];
 
-let createMatrix = () => {
+let createMatrix = (() => {
   for (let i = 0; i < 5; i++) {
     let cols = [];
     for (let j = 0; j < 5; j++) {
@@ -14,14 +14,14 @@ let createMatrix = () => {
     }
     matrix.push(cols);
   }
-}
-createMatrix();
+})();
 
 const Board = () => {
   const [boardState, setBoardState] = useState(false);
   const [youWon, setYouWon] = useState(false);
   const [youLost, setYouLost] = useState(false);
-  let [clicksToLose, setClicksToLose] = useState(15);
+  let [clicksToLose, setClicksToLose] = useState(25);
+  let [level, setLevel] = useState(1);
   const renderBoard = [];
 
   useEffect(() => {
@@ -51,10 +51,10 @@ const Board = () => {
 
   const handleCellPress = (i, j) => {
     handlePress(i, j);
-    handlePress(i + 1, j);
-    handlePress(i - 1, j);
-    handlePress(i, j - 1);
-    handlePress(i, j + 1);
+    // handlePress(i + 1, j);
+    // handlePress(i - 1, j);
+    // handlePress(i, j - 1);
+    // handlePress(i, j + 1);
     setClicksToLose((prevState) => prevState - 1);
   };
 
@@ -75,9 +75,17 @@ const Board = () => {
   };
 
   const handleReset = () => {
-    setClicksToLose(15);
+    setClicksToLose(25);
+    setLevel(1);
     if (youLost) setYouLost(false);
     if (youWon) setYouWon(false);
+  };
+
+  const handleLevel = () => {
+    if (youWon && level <= 5) {
+      setClicksToLose((prevState) => prevState - 5);
+      setLevel((prevState) => prevState + 1);
+    }
   };
 
   return (
@@ -88,13 +96,17 @@ const Board = () => {
         <Text style={styles.text}>You Lost !!!! </Text>
       ) : (
         <>
+          <Text style={styles.levelText}>Level: {level}</Text>
           <Text style={styles.text}>
             You have {clicksToLose} clicks left !{" "}
           </Text>
           <View style={styles.rows}>{renderBoard}</View>
         </>
       )}
-      <Button onPress={handleReset} title="Reset" />
+      <View style={styles.buttons}>
+        <Button style={styles.btn} onPress={handleReset} title="Reset" />
+        <Button style={styles.btn} onPress={handleLevel} title="Continue" />
+      </View>
     </>
   );
 };
@@ -121,5 +133,12 @@ let styles = StyleSheet.create({
   text: {
     fontSize: 24,
   },
+  levelText: {
+    fontSize: 16,
+  },
+  buttons: {
+    marginTop: "5%",
+  },
+  btn: {},
 });
 export default Board;
