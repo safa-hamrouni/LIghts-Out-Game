@@ -62,10 +62,10 @@ const Board = () => {
 
   const handleCellPress = (i, j) => {
     handlePress(i, j);
-    // handlePress(i + 1, j);
-    // handlePress(i - 1, j);
-    // handlePress(i, j - 1);
-    // handlePress(i, j + 1);
+    handlePress(i + 1, j);
+    handlePress(i - 1, j);
+    handlePress(i, j - 1);
+    handlePress(i, j + 1);
     setClicksToLose((prevState) => prevState - 1);
   };
 
