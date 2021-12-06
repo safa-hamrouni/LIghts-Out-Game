@@ -2,23 +2,16 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
-const OneCell = ({ i, item, id, matrixIndex }) => {
-  const [state, setState] = useState(true);
-  const handlePress = (el, i, j) => {
-    console.log(el[j - 1], el[i], i, j);
-    if (
-      el[i + 1] === 1 ||
-      el[i - 1] === 1 ||
-      el[j - 1] === 1 ||
-      el[j + 1] === 1
-    )
-      setState((prevState) => !prevState);
+const OneCell = ({ i, item, matrixIndex }) => {
+  const [state, setState] = useState(false);
+  const handlePress = () => {
+    setState((prevState) => !prevState);
   };
   return (
     <TouchableOpacity
-      style={state ? styles.squareDark : styles.squareLit}
+      style={state ? styles.squareLit : styles.squareDark}
       key={uuidv4()}
-      onPress={() => handlePress(item, i, matrixIndex)}
+      onPress={() => handlePress()}
     >
       <View>
         <Text>{item[i]}</Text>
