@@ -4,30 +4,41 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 // import OneCell from "./OneCell"
 
-let matrix = [];
-
-let createMatrix = (() => {
-  for (let i = 0; i < 5; i++) {
-    let cols = [];
-    for (let j = 0; j < 5; j++) {
-      cols.push(Math.random() < 0.3);
-    }
-    matrix.push(cols);
-  }
-})();
+let matrice = [
+  [false, true, false, false, false],
+  [false, false, true, false, true],
+  [true, false, false, true, false],
+  [false, true, false, false, false],
+  [false, true, true, false, false],
+];
 
 const Board = () => {
-  const [boardState, setBoardState] = useState(false);
+  const renderBoard = [];
+  let matrix = [];
+  const level1 = 20;
+  const level2 = 15;
+  const level3 = 10;
+  const [boardState, setBoardState] = useState(matrice);
   const [youWon, setYouWon] = useState(false);
   const [youLost, setYouLost] = useState(false);
-  let [clicksToLose, setClicksToLose] = useState(25);
+  const [finish, setFinish] = useState(false);
+  let [clicksToLose, setClicksToLose] = useState(level1);
   let [level, setLevel] = useState(1);
-  const renderBoard = [];
 
   useEffect(() => {
     handleLooser(clicksToLose);
-    handleWinner(matrix);
-  }, [clicksToLose, matrix]);
+    handleWinner(boardState);
+  }, [clicksToLose, boardState]);
+
+  let createMatrix = () => {
+    for (let i = 0; i < 5; i++) {
+      let cols = [];
+      for (let j = 0; j < 5; j++) {
+        cols.push(Math.random() < 0.3);
+      }
+      matrix.push(cols);
+    }
+  };
 
   const createBoard = ((arr) => {
     for (let i = 0; i < arr.length; i++) {
@@ -42,23 +53,24 @@ const Board = () => {
         );
       }
     }
-  })(matrix);
+  })(boardState);
 
   const handlePress = (i, j) => {
-    if (i >= 0 && i < 5 && j >= 0 && j < 5) matrix[i][j] = !matrix[i][j];
-    setBoardState((prevState) => !prevState);
+    if (i >= 0 && i < 5 && j >= 0 && j < 5)
+      boardState[i][j] = !boardState[i][j];
   };
 
   const handleCellPress = (i, j) => {
     handlePress(i, j);
-    handlePress(i + 1, j);
-    handlePress(i - 1, j);
-    handlePress(i, j - 1);
-    handlePress(i, j + 1);
+    // handlePress(i + 1, j);
+    // handlePress(i - 1, j);
+    // handlePress(i, j - 1);
+    // handlePress(i, j + 1);
     setClicksToLose((prevState) => prevState - 1);
   };
 
   const handleWinner = (matrix) => {
+    if (level > 3) setFinish((prevState) => !prevState);
     let winnerArr = [];
     matrix.forEach((el) => {
       el.forEach((elem) => {
@@ -75,16 +87,29 @@ const Board = () => {
   };
 
   const handleReset = () => {
-    setClicksToLose(25);
-    setLevel(1);
+    createMatrix();
+    if (matrix.length) setBoardState(matrix);
     if (youLost) setYouLost(false);
     if (youWon) setYouWon(false);
+    setClicksToLose(level1);
+    setLevel(1);
+    setFinish(false);
   };
 
   const handleLevel = () => {
-    if (youWon && level <= 5) {
-      setClicksToLose((prevState) => prevState - 5);
+    // createMatrix();
+    // if (matrix.length) setBoardState(matrix);
+    if (level === 1) {
+      setClicksToLose(level2);
       setLevel((prevState) => prevState + 1);
+    }
+    if (level === 2) {
+      setClicksToLose(level3);
+      setLevel((prevState) => prevState + 1);
+    }
+    if (level === 3) {
+      setFinish(true);
+      setYouWon(false);
     }
   };
 
@@ -94,6 +119,8 @@ const Board = () => {
         <Text style={styles.text}>You Won !! </Text>
       ) : youLost ? (
         <Text style={styles.text}>You Lost !!!! </Text>
+      ) : finish ? (
+        <Text style={styles.text}>All done ! </Text>
       ) : (
         <>
           <Text style={styles.levelText}>Level: {level}</Text>
@@ -139,6 +166,5 @@ let styles = StyleSheet.create({
   buttons: {
     marginTop: "5%",
   },
-  btn: {},
 });
 export default Board;
